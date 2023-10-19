@@ -8,11 +8,15 @@ def HTML_to_Lists (html_file_path):
 
     # Parse the HTML content using BeautifulSoup
     soup = BeautifulSoup(html_content, 'html.parser')
+    grade_attrs = {
+    'id': 'grades_summary',
+    'class': ['editable', 'ic-Table', 'ic-Table--hover-row', 'ic-Table--grades-summary-table']
+    }
 
     # Find the table with id="grades_summary"
-    grades_table = soup.find('table', {'id': 'grades_summary'})
+    grades_table = soup.find('table', grade_attrs)
 
-    if not grades_table:
+    if grades_table == None:
         raise ValueError(f"No table with id='grades_summary' found in {html_file_path}.")
     
     data = defaultdict(list)
@@ -50,5 +54,18 @@ def HTML_to_Lists (html_file_path):
 
             grade = grade_span.get_text(strip=True)
             
-            data[name].append(int(grade))
+            data[name].append(int(float(grade)))
     return data
+
+def getCourseFromTitle(html_file_path):
+    # read the HTML file
+    with open(html_file_path, 'r', encoding='utf-8') as file:
+        html_content = file.read()
+    
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    name = soup.find("title").text
+    course_name = name.split(':')[1].strip().upper()
+    first_name, second_name = (name.split(' ')[2].strip(), name.split(' ')[3].removesuffix(":").strip())
+    return (f"{first_name} {second_name} {course_name}")
+

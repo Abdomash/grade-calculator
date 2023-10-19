@@ -1,4 +1,4 @@
-from scrape import HTML_to_Lists
+from scrape import HTML_to_Lists, getCourseFromTitle
 import os
 
 def getHTMLFileInput () -> str:
@@ -17,16 +17,29 @@ def getHTMLFileInput () -> str:
 def getDatafromInput (file_path):
     try:
         data = HTML_to_Lists (file_path)
-    except ValueError:
-        print (f"Could not find a matching html table tag from {file_path}.")
+    except ValueError as ve:
+        print (ve.with_traceback())
         exit()
     except FileNotFoundError:
         print (f"Could not find {file_path}.")
         exit()
     return data
 
+def getCoursefromInput (file_path):
+    try:
+        name = getCourseFromTitle(file_path)
+    except ValueError as ve:
+        print (ve.with_traceback())
+        exit()
+    except FileNotFoundError:
+        print (f"Could not find {file_path}.")
+        exit()
+    return name
+
+
+
 def print_data (data):
-    print("\n--- All Captured Data ---")
+    print("\n--- Captured Data ---")
     for key, value in data.items():
         print(f"{key}: {value}")
 
@@ -40,7 +53,7 @@ def print_quiz_info (quizList):
     total_score = e + m + min(e // 2, r)
     quiz_left = MAXQUIZ - (len(quizList))
     
-    print ("\n---- Quizzies ----")
+    print ("---- Quizzies ----")
     print (f"Your score so far is {total_score}/{len(quizList)}.")
     print (f"You have {quiz_left} quizzies left.")
     print (f"Your highest possible score is {quiz_left + total_score}/{MAXQUIZ}.")
@@ -53,7 +66,9 @@ def print_quiz_info (quizList):
 
 if __name__ == "__main__":
     file_path = getHTMLFileInput()
+    full_name = getCoursefromInput (file_path)
     data = getDatafromInput (file_path)
 
+    print(f"------| {full_name} |-------\n")
     print_quiz_info(data["Quiz"])
     print_data (data)
