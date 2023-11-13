@@ -1,5 +1,8 @@
+import os
+import sys
 from bs4 import BeautifulSoup
 from collections import defaultdict
+from datetime import datetime
 
 def HTML_to_Lists (html_file_path):
     # read the HTML file
@@ -69,3 +72,50 @@ def getCourseFromTitle(html_file_path):
     first_name, second_name = (name.split(' ')[2].strip(), name.split(' ')[3].removesuffix(":").strip())
     return (f"{first_name} {second_name} {course_name}")
 
+def getData (file_path):
+    try:
+        data = HTML_to_Lists (file_path)
+    except ValueError as ve:
+        print (ve.with_traceback())
+        exit()
+    except FileNotFoundError:
+        print (f"Could not find {file_path}.")
+        exit()
+    return data
+
+def getName (file_path):
+    try:
+        name = getCourseFromTitle(file_path)
+    except ValueError as ve:
+        print (ve.with_traceback())
+        exit()
+    except FileNotFoundError:
+        print (f"Could not find {file_path}.")
+        exit()
+    return name
+
+def readfilePath(argv) -> str:
+    if len(argv) < 2:
+        print("Usage: python main.py <file_path>")
+        sys.exit(1)
+
+    file_path = sys.argv[1]
+    if file_path != "" and os.path.exists(file_path) and os.path.isfile(file_path):
+        return file_path
+    else:
+        print(f"File '{file_path}' does not exist or is not a valid file. Please enter a valid file path.")
+        sys.exit(1)
+
+def getDateOfCreation(file):
+    try:
+        # Get the last modification time of the file
+        timestamp = os.path.getmtime(file)
+
+        # Convert the timestamp to a human-readable date
+        last_modified_date = datetime.fromtimestamp(timestamp)
+
+        return last_modified_date
+    except FileNotFoundError:
+        print(f"File '{file}' not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
