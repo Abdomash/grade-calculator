@@ -78,4 +78,5 @@ if __name__ == "__main__":
     # -----| Printing Grades |-----
     print_header(full_name, date_of_creation)
     grade.print_grade()
+    grade.print_path_to_all_next_grades()
     # grade.print_captured_data()
