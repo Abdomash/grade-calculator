@@ -91,3 +91,4 @@ def captured_data(data: Grader):
     print(bb("\n------| Captured Data |------\n"))
     for key, value in data.items():
         print(f"{key.rjust(8)} {len(value):>2}: {value}")
+    print()

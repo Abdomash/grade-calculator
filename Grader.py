@@ -48,14 +48,14 @@ class Grader:
         min_paths = {}
         for category, grades in orig_min_paths.items():
             for grade, values in grades.items():
-                if grade not in min_paths:
-                    min_paths[grade] = {}
-                min_paths[grade][category] = values
+                if grades_order.index(grade) >= grades_order.index(self.finalMaxGrade):
+                    if grade not in min_paths:
+                        min_paths[grade] = {}
+                    min_paths[grade][category] = values
 
         sorted_keys = sorted(min_paths.keys(), key=lambda x: grades_order.index(x))
         min_paths = {key: min_paths[key] for key in sorted_keys}
 
-        print(min_paths)
         return min_paths
     
     def addMaxGrades(self, data) -> dict[str, dict]:
