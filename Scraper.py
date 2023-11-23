@@ -60,7 +60,7 @@ def HTML_to_Lists (html_file_path):
             data[name].append(int(float(grade)))
     return data
 
-def getCourseFromTitle(html_file_path):
+def getHeaderFromTitle(html_file_path):
     # read the HTML file
     with open(html_file_path, 'r', encoding='utf-8') as file:
         html_content = file.read()
@@ -83,16 +83,19 @@ def getData (file_path):
         exit()
     return data
 
-def getName (file_path):
+def getNameAndCourseName (file_path):
     try:
-        name = getCourseFromTitle(file_path)
+        header = getHeaderFromTitle(file_path)
+        tokens = header.split(' ')
+        courseName = tokens.pop()
+        name = ' '.join(tokens)
+        return (name, courseName)
     except ValueError as ve:
         print (ve.with_traceback())
         exit()
     except FileNotFoundError:
         print (f"Could not find {file_path}.")
         exit()
-    return name
 
 def readfilePath(argv) -> str:
     if len(argv) < 2:
