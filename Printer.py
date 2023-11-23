@@ -46,34 +46,46 @@ def path_to_all_grades(grade: Grader):
         output = ""
         correct_range = [i for i in range(1, max(scores) + 1) if scores.count(i) > 0]
         for k, i in enumerate(correct_range):
-            output += f"{scores.count(i)}x {ch[i]}"
+            output += f"{scores.count(i)}x{bb(ch[i])}"
             if k < len(correct_range) - 2:
                 output += ", "
             elif k < len(correct_range) - 1:
                 output += " and "
         return output
-            
+
+    def aORAn(letter):
+        return 'an ' if letter[0] == 'A' or letter[0] == 'F' else 'a '
+
     if grade.finalGrade == 'A':
         return
     
     print(bb("\n------| Detailed path to higher grades |------\n"))
     print("Note:", 
     '''
-    This is a detailed path on how to get to each of the 
-    higher grades you can get to. For each grade, it shows
-    you how many more assignments (and what scores) you 
-    need in each category.
+    This is a detailed path on how to get to each higher 
+    grades you can get to. For each grade, it shows you
+    how many additional assignments (and what scores) you 
+    need for each category.
     ''')
 
-    print("Remember:\n\tE = 3/3, M = 2/3, R = 1/3, N = 0/3\n")
-    for key, value in grade.data.items():
-        if value['grade'] == 'A':
-            continue
-        print(f"\t{(key + ':').ljust(9)} ")
-        for letter, scores in value['path-to-all-grades'].items():
-            print(f"\t  ↳ to get {('(' + letter + '),').ljust(5)}", end="")
-            print(f" You need at least {toText(scores, value['use1s'])}.")
-        print()
+    print(f"Remember:\n\t{bb('E')} = 3/3, {bb('M')} = 2/3, {bb('R')} = 1/3, {bb('N')} = 0/3\n")
+
+    grades_order = [key for key in grade.data["Quiz"]["rubric"].keys() if key != 'MAX']
+
+    for letter in grades_order:
+        if letter == grade.finalGrade:
+            break
+
+        if letter in grade.paths.keys():
+            print(f"To get {aORAn(letter)}{bb(letter)},")
+            max_cat_len = max(len(category) for category in grade.paths[letter].keys() if grade.data[category]['grade'] != letter) + 1
+            for category, scores in grade.paths[letter].items():
+                if grade.data[category]['grade'] == letter:
+                    continue
+                print(f"  -> in {(category + ','):<{max_cat_len}}", end="")
+                print(f" from {(grade.data[category]['rubric']['MAX'] - len(grade.data[category]['data'])):>2} assignments left, ", end='')
+                print(f"you need {toText(scores, grade.data[category]['use1s'])}.")
+            print()
 
 def captured_data(data: Grader):
     print(bb("\n------| Captured Data |------\n"))
