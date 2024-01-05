@@ -8,7 +8,7 @@ def bb(text):
     return Style.BRIGHT + text + Style.RESET_ALL
     
 def header(name, course, date):
-    print(bb("\n------| File Information |-------\n"))
+    print(bb("------| File Information |-------\n"))
     print(bb("Name:"), name)
     print(bb("Course:"), course.replace('-', ' '))
     print(bb("File Created on:"), str(date).split(' ')[0])

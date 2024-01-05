@@ -3,6 +3,7 @@ import Scraper
 import Grader
 import Printer
 import Config
+import Pager
 
 if __name__ == "__main__":
 
@@ -20,7 +21,8 @@ if __name__ == "__main__":
     grade = Grader.Grader(dataJSON)
 
     # -----| Printing Grades |-----
-    Printer.header(name, course, date_of_creation)
-    Printer.grade(grade)
-    Printer.path_to_all_grades(grade)
-    Printer.captured_data(data)
+    with Pager.Pager() as pager: # redirects stdout
+        Printer.header(name, course, date_of_creation)
+        Printer.grade(grade)
+        Printer.path_to_all_grades(grade)
+        Printer.captured_data(data)
